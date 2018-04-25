@@ -1,0 +1,80 @@
+version: '2'
+
+services:
+  apollo-db:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: apollo-db:latest
+    container_name: apollo-db
+    hostname: apollo-db
+    environment:
+      TZ: Asia/Shanghai
+      HOST_IP: 192.168.190.128
+      HOST_IP: 192.168.190.128
+    ports:
+      - "3306:3306"
+    volumes:
+      - /usr/local/mysql/log/mysqld.log:/var/log/mysqld.log
+      - /usr/local/mysql/config/my.cnf:/etc/my.cnf
+      - /usr/local/mysql/data:/var/lib/mysql
+    networks:
+      apollo_network:
+        ipv4_address: 172.16.238.101
+
+  apollo-configservice:
+    image: registry.cn-hangzhou.aliyuncs.com/ghoulich-centos/apollo-configservice:0.11.0
+    container_name: apollo-configservice
+    hostname: apollo-configservice
+    environment:
+      JAVA_OPTS: "-Dapollo_profile=github -Dspring.datasource.url=jdbc:mysql://172.16.238.101:3306/ApolloConfigDB?characterEncoding=utf8 -Dspring.datasource.username=root -Dspring.datasource.password=123.Org$$%^"
+    depends_on:
+      - apollo-db
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/log/apollo/configservice:/var/log/apollo/configservice
+    networks:
+      apollo_network:
+        ipv4_address: 172.16.238.102
+
+  apollo-adminservice:
+    image: registry.cn-hangzhou.aliyuncs.com/ghoulich-centos/apollo-adminservice:0.11.0
+    container_name: apollo-adminservice
+    hostname: apollo-adminservice
+    environment:
+      JAVA_OPTS: "-Dapollo_profile=github -Dspring.datasource.url=jdbc:mysql://172.16.238.101:3306/ApolloConfigDB?characterEncoding=utf8 -Dspring.datasource.username=root -Dspring.datasource.password=123.Org$$%^"
+    depends_on:
+      - apollo-configservice
+    ports:
+      - "8090:8090"
+    volumes:
+      - /var/log/apollo/adminservice:/var/log/apollo/adminservice
+    networks:
+      apollo_network:
+        ipv4_address: 172.16.238.103
+
+  apollo-protal:
+    image: registry.cn-hangzhou.aliyuncs.com/ghoulich-centos/apollo-portal:0.11.0
+    container_name: apollo-portal
+    hostname: apollo-portal
+    environment:
+      JAVA_OPTS: "-Dapollo_profile=github,auth -Ddev_meta=http://172.16.238.102:8080/ -Dserver.port=8070 -Dspring.datasource.url=jdbc:mysql://172.16.238.101:3306/ApolloPortalDB?characterEncoding=utf8 -Dspring.datasource.username=root -Dspring.datasource.password=123.Org$$%^"
+    depends_on:
+      - apollo-adminservice
+    ports:
+      - "8070:8070"
+    volumes:
+      - /var/log/apollo/portal:/var/log/apollo/portal
+    networks:
+      apollo_network:
+        ipv4_address: 172.16.238.104
+
+networks:
+  apollo_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.238.0/24
+        gateway: 172.16.238.1
