@@ -8,3 +8,6 @@ docker rmi apollo-db
 
 # 删除数据库相关目录
 rm -rf /usr/local/mysql
+
+# 删除日志目录
+rm -rf /var/log/apollo
