@@ -5,3 +5,4 @@ MAINTAINER ghoulich@aliyun.com
 COPY apolloconfigdb.sql /apolloconfigdb.sql
 COPY apolloportaldb.sql /apolloportaldb.sql
 COPY start.sh /start.sh
+COPY supervisord.conf /etc/supervisord.conf
