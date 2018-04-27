@@ -25,7 +25,7 @@ services:
     container_name: apollo-configservice
     hostname: apollo-configservice
     environment:
-      JAVA_OPTS: "-Dapollo_profile=github -Dspring.datasource.url=jdbc:mysql://172.16.238.101:3306/ApolloConfigDB?characterEncoding=utf8 -Dspring.datasource.username=root -Dspring.datasource.password=123.Org$$%^"
+      JAVA_OPTS: "-Dapollo_profile=github -Dspring.datasource.url=jdbc:mysql://172.16.238.101:3306/ApolloConfigDB?characterEncoding=utf8 -Dspring.datasource.username=root -Dspring.datasource.password=123.Org$$%^ -Deureka.instance.ip-address=localhost"
     depends_on:
       - apollo-db
     ports:
@@ -57,7 +57,7 @@ services:
     container_name: apollo-portal
     hostname: apollo-portal
     environment:
-      JAVA_OPTS: "-Dapollo_profile=github,auth -Ddev_meta=http://172.16.238.102:8080/ -Dserver.port=8070 -Dspring.datasource.url=jdbc:mysql://172.16.238.101:3306/ApolloPortalDB?characterEncoding=utf8 -Dspring.datasource.username=root -Dspring.datasource.password=123.Org$$%^"
+      JAVA_OPTS: "-Dapollo_profile=github,auth -Ddev_meta=http://localhost:8080/ -Dserver.port=8070 -Dspring.datasource.url=jdbc:mysql://172.16.238.101:3306/ApolloPortalDB?characterEncoding=utf8 -Dspring.datasource.username=root -Dspring.datasource.password=123.Org$$%^"
     depends_on:
       - apollo-adminservice
     ports:
