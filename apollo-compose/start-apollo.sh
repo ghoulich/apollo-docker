@@ -13,6 +13,8 @@ host_ip=$(ifconfig ens3 | grep inet | grep -v 127.0.0.1 | grep -v inet6 | awk '{
 rm -rf docker-compose.yml
 cp docker-compose.yml.bak docker-compose.yml
 sed -i "12a\      HOST_IP: ${host_ip}" docker-compose.yml
+sed -i "29s\-Deureka.instance.ip-address=localhost\-Deureka.instance.ip-address=${host_ip}\g" docker-compose.yml
+sed -i "61s\-Ddev_meta=http://localhost:8080/\-Ddev_meta=http://${host_ip}:8080/\g" docker-compose.yml
 
 # 启动Apollo容器集群
 docker-compose up -d
