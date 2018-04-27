@@ -52,7 +52,7 @@ services:
       apollo_network:
         ipv4_address: 172.16.238.103
 
-  apollo-protal:
+  apollo-portal:
     image: registry.cn-hangzhou.aliyuncs.com/ghoulich-centos/apollo-portal:0.11.0
     container_name: apollo-portal
     hostname: apollo-portal
